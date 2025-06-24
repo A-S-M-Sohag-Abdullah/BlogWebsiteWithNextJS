@@ -13,7 +13,6 @@ export function middleware(request: NextRequest) {
   const isAdminRoute = pathname.startsWith(adminPathPrefix);
   const isLoginRoute = pathname === loginPath;
   const key = request.nextUrl.searchParams.get("key");
-  console.log(isAdminRoute);
   // Block unauthorized admin route access
   if ((isAdminRoute || isLoginRoute) && process.env.NODE_ENV === "production") {
     const allowed = allowedIPs.some(
