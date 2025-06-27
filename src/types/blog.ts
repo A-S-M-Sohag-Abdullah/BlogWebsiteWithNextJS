@@ -1,9 +1,17 @@
+type BlogComments = {
+  name: string;
+  email: string;
+  message: string;
+  createdAt: string;
+};
 export type Blog = {
-  id: string;
+  _id: string;
   title: string;
   content: string;
+  metaDescription: string;
   coverImage: string;
-  category: string;
+  categories: string[];
   createdAt: string;
-  tags: string[];
+  keywords: string[];
+  comments: BlogComments[];
 };

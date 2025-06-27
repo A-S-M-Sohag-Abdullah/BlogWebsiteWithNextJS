@@ -1,7 +1,7 @@
 // components/BlogSection.tsx
 import Image from "next/image";
 import Link from "next/link";
-import { montserrat } from "./googleFonts/fontsProvider";
+import { montserrat } from "../googleFonts/fontsProvider";
 import { Fragment } from "react";
 
 
@@ -65,15 +65,17 @@ export default async function BlogSection() {
                 className="w-full h-96 object-cover bg-gray-300"
               />
               <div className="p-4">
-                {featuredBlogs[0].categories.map((category) => (
-                  <h5
-                    key={category}
-                    className="text-xs bg-gray-600 rounded text-white py-1 px-4 w-fit mb-1"
-                  >
-                    {category}
-                  </h5>
-                ))}
-
+                <div className="flex space-x-2 flex-wrap">
+                  {featuredBlogs[0].categories.map((category) => (
+                    <h5
+                      key={category}
+                      className="text-xs bg-gray-600 rounded text-white py-1 px-4 w-fit mb-1"
+                    >
+                      {category}
+                    </h5>
+                  ))}
+                  
+                </div>
                 <h2
                   className={"text-lg font-medium mb-2 " + montserrat.className}
                 >
@@ -99,14 +101,16 @@ export default async function BlogSection() {
                         className="w-48 h-36 object-cover bg-gray-300 rounded"
                       />
                       <div className="p-3">
-                        {item.categories.map((category) => (
-                          <h5
-                            key={category}
-                            className="text-xs bg-gray-600 rounded text-white py-1 px-4 w-fit mb-1"
-                          >
-                            {category}
-                          </h5>
-                        ))}
+                       <div className="flex space-x-2 flex-wrap">
+                         {item.categories.map((category) => (
+                           <h5
+                             key={category}
+                             className="text-xs bg-gray-600 rounded text-white py-1 px-4 w-fit mb-1"
+                           >
+                             {category}
+                           </h5>
+                         ))}
+                       </div>
                         <h2
                           className={
                             "text-sm font-medium mb-2 " + montserrat.className

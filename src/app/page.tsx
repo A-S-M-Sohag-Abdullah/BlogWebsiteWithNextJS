@@ -1,12 +1,12 @@
 import { Suspense } from "react";
-import BlogSection from "@/components/BlogSection";
+import BlogSection from "@/components/homepageblogcards/BlogSection";
 import Skeleton from "@/components/ui/skeleton";
 import { montserrat } from "@/components/googleFonts/fontsProvider";
-import RecentBlogs from "@/components/RecentBlogs";
-import HomeCategoryBlogSection from "@/components/HomeCategoryBlogSection";
-import HalfWidhtCategoryBlogSection from "@/components/HalfWidhtCategoryBlogSection";
+import RecentBlogs from "@/components/homepageblogcards/RecentBlogs";
+import HomeCategoryBlogSection from "@/components/homepageblogcards/HomeCategoryBlogSection";
+import HalfWidhtCategoryBlogSection from "@/components/homepageblogcards/HalfWidhtCategoryBlogSection";
 /* import Link from "next/link"; */
-import SideBySIdeCategorySection from "@/components/SideBySIdeCategorySection";
+import SideBySIdeCategorySection from "@/components/homepageblogcards/SideBySIdeCategorySection";
 
 export default function Home() {
   return (

@@ -5,11 +5,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
-    console.log("hitwqe");
     await connectDB();
 
     const { searchParams } = new URL(req.url);
-    console.log(searchParams);
+
     const categoryName = searchParams.get("name");
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
@@ -23,9 +22,7 @@ export async function GET(req: NextRequest) {
 
     // ✅ Find category by name
     const category = await Category.findOne({ name: categoryName });
-
     
-
     if (!category) {
       return NextResponse.json(
         { success: false, message: "Category not found" },
@@ -40,7 +37,6 @@ export async function GET(req: NextRequest) {
       .skip(skip)
       .limit(limit)
       .populate("categories");
-
     const total = await Blog.countDocuments({ categories: category._id });
 
     return NextResponse.json({

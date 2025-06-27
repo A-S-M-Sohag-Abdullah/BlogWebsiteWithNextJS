@@ -1,69 +1,94 @@
-// app/stock-market/page.tsx (or pages/stock-market.tsx for older versions)
+"use client";
 
+import { Blog } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
-
-const blogs = [
-  {
-    id: "1",
-    title: "15 Shocking Elon Musk Tweets About Stock Market",
-    image: "https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg",
-    categories: ["Stock Market"],
-    excerpt:
-      "Cursus iaculis etiam in In nullam donec sem sed consequat scelerisque nibh amet, massa egestas risus, gravida vel amet...",
-  },
-  {
-    id: "2",
-    title: "The Ultimate Guide to Stock Market",
-    image:
-      "https://res.cloudinary.com/dwa5e34mm/image/upload/v1750658437/gyfetfjqriwmkg2kzidc.jpg",
-    categories: ["Editors Pick", "Stock Market"],
-    excerpt:
-      "Nunc volutpat tortor libero at augue mattis neque, suspendisse aenean praesent sit habitant laoreet felis lorem...",
-  },
-  {
-    id: "3",
-    title: "15 Unbelievable Things You Never Knew About Stock Market",
-    image: "https://images.pexels.com/photos/7567444/pexels-photo-7567444.jpeg",
-    categories: ["Stock Market"],
-    excerpt:
-      "Nunc volutpat tortor libero at augue mattis neque, suspendisse aenean praesent sit habitant laoreet felis lorem...",
-  },
-];
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export default function StockMarketPage() {
+  const { category } = useParams();
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const limit = 2;
+
+  
+  const updatePage = () => {
+    setPage(page + 1);
+  };
+  useEffect(() => {
+    // Reset when category changes
+    setBlogs([]);
+    setPage(1);
+    setHasMore(true);
+  }, [category]);
+
+  useEffect(() => {
+    const fetchMoreBlogs = async () => {
+      try {
+        const res = await fetch(
+          `/api/blogs/by-category?name=${category}&page=${page}&limit=${limit}`
+        );
+
+        if (!res.ok) throw new Error("Failed to fetch blogs");
+
+        const data = await res.json();
+        const newBlogs = data.blogs;
+
+        if (newBlogs.length < limit) {
+          setHasMore(false);
+        }
+
+        setBlogs((prev) => [...prev, ...newBlogs]);
+      } catch (err) {
+        console.error("Error fetching blogs:", err);
+        setHasMore(false);
+      }
+    };
+
+    fetchMoreBlogs();
+  }, [category, page]);
   return (
     <main className="bg-gray-50 py-10 px-4 md:px-16">
       <h1 className="text-3xl font-bold text-blue-800 mb-6">Stock Market</h1>
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-10">
+      <div className="mx-auto grid grid-cols-3  gap-10">
         {/* Main Content */}
-        <div className="lg:col-span-3 space-y-12">
-          {blogs.map((blog) => (
-            <article key={blog.id} className="border-b pb-10">
-              <Image
-                src={blog.image}
-                alt={blog.title}
-                width={600}
-                height={350}
-                className="w-full h-96"
-              />
-              <h2 className="text-xl font-semibold text-gray-800 mb-1">
-                {blog.title}
-              </h2>
-              <div className="text-sm text-blue-600 font-medium mb-2 space-x-2">
-                {blog.categories.map((cat) => (
-                  <span key={cat}>{cat}</span>
-                ))}
-              </div>
-              <p className="text-gray-600 text-sm mb-2">{blog.excerpt}</p>
-              <a
-                href="#"
-                className="text-sm font-medium text-blue-600 hover:underline"
-              >
-                Read More →
-              </a>
-            </article>
-          ))}
+        <div className="w-full mx-auto px-4 py-6 col-span-2">
+          <InfiniteScroll
+            dataLength={blogs.length}
+            next={updatePage}
+            hasMore={hasMore}
+            loader={<p className="text-center py-4">Loading more blogs...</p>}
+          >
+            <div className="grid grid-cols-1">
+              {blogs.map((item, i) => (
+                <div key={i} className="rounded overflow-hidden shadow-sm">
+                  <Link href={`/blog/${item._id}`}>
+                    <Image
+                      src={item.coverImage}
+                      alt={item.title}
+                      width={500}
+                      height={250}
+                      className="w-full h-96 object-cover"
+                    />
+                    <div className="p-4">
+                      {item.categories.map((category, index) => (
+                        <h5
+                          key={index}
+                          className="text-xs bg-gray-600 rounded text-white py-1 px-4 w-fit mb-1"
+                        >
+                          {typeof category === "string" ? category : category}
+                        </h5>
+                      ))}
+                      <h3 className="text-lg font-semibold">{item.title}</h3>
+                    </div>
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </InfiniteScroll>
         </div>
 
         {/* Sidebar */}

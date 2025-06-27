@@ -1,4 +1,4 @@
-import { montserrat } from "./googleFonts/fontsProvider";
+import { montserrat } from "../googleFonts/fontsProvider";
 import axios from "axios";
 
 interface Blog {

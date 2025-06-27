@@ -2,27 +2,26 @@
 
 import { useEffect, useMemo, useState } from "react";
 import KeywordInput from "@/components/formComponents/KeywordInput";
-/* import { useRouter } from "next/navigation"; */
 import dynamic from "next/dynamic";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 import axiosInstance from "@/lib/axiosInstance";
-import { Category } from "@/types";
+import { useParams, useRouter } from "next/navigation";
+import { Blog, Category } from "@/types";
 
 const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
-export default function AddBlogPage() {
-  /*  const router = useRouter(); */
-  //form data states
+export default function UpdateBlogPage() {
+  const { blogId } = useParams();
+  const router = useRouter();
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
-const [keywords, setKeywords] = useState<string[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-
-  //other states
-  const [categories, setCategories] = useState<Category[]>([]);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [keywords, setKeywords] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
   type CloudinaryUploadResponse = {
@@ -44,34 +43,27 @@ const [keywords, setKeywords] = useState<string[]>([]);
       filesVariableName: () => "file",
       prepareData(formData: FormData): void {
         const file = formData.get("file") as File;
-        console.log(file);
         if (file && file.size > 10 * 1024 * 1024) {
           alert("File size exceeds 10MB. Please upload a smaller image.");
           formData.delete("file");
-          return; // ⬅️ prevent sending the large file
+          return;
         }
         formData.append("upload_preset", process.env.NEXT_PUBLIC_UPLOADPRESET!);
       },
-
-      isSuccess(resp: CloudinaryUploadResponse): boolean {
+      isSuccess(resp: CloudinaryUploadResponse) {
         return !!resp && !resp.error;
       },
-
-      getMessage(resp: CloudinaryUploadResponse): string {
+      getMessage(resp: CloudinaryUploadResponse) {
         return resp.error?.message || "";
       },
-
       process(resp: CloudinaryUploadResponse): UploadProcessResult {
         if (resp && !resp.error) {
-          console.log(resp);
-          // Insert image logic should be handled by the editor, not here
           return {
             isSuccess: true,
             isLink: true,
             base: resp.secure_url,
           };
         }
-
         return {
           isSuccess: false,
           message: uploaderConfig.getMessage(resp),
@@ -94,11 +86,17 @@ const [keywords, setKeywords] = useState<string[]>([]);
     };
   }, []);
 
+  const toggleCategory = (id: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(id) ? prev.filter((cat) => cat !== id) : [...prev, id]
+    );
+  };
+
   const onDrop = async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (file && file.size > 10 * 1024 * 1024) {
       alert("File size exceeds 10MB. Please upload a smaller image.");
-      return; // ⬅️ prevent sending the large file
+      return;
     }
     if (file) {
       setImageFile(file);
@@ -111,42 +109,32 @@ const [keywords, setKeywords] = useState<string[]>([]);
     accept: { "image/*": [] },
   });
 
-  const toggleCategory = (id: string) => {
-    setSelectedCategories((prev) =>
-      prev.includes(id) ? prev.filter((cat) => cat !== id) : [...prev, id]
-    );
-  };
-
-  const handleSubmit = async () => {
-    if (!title || !content || !imageFile || selectedCategories.length < 1) {
+  const handleUpdate = async () => {
+    if (!title || !content || selectedCategories.length < 1) {
       alert("Please fill in all fields");
       return;
     }
 
     setLoading(true);
+    let imageUrl = imagePreview;
 
-    const formdata = new FormData();
+    if (imageFile) {
+      const formdata = new FormData();
+      formdata.append("file", imageFile);
+      formdata.append("upload_preset", process.env.NEXT_PUBLIC_UPLOADPRESET!);
 
-    formdata.append("file", imageFile);
+      const data = await fetch(
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: formdata,
+        }
+      ).then((r) => r.json());
 
-    formdata.append(
-      "upload_preset",
-      process.env.NEXT_PUBLIC_UPLOADPRESET as string
-    );
-
-    const data = await fetch(
-      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
-      {
-        method: "POST",
-        body: formdata,
-      }
-    ).then((r) => r.json());
-
-    const imageUrl = data.secure_url;
-
+      imageUrl = data.secure_url;
+    }
     const metaDescription = content.replace(/<[^>]*>/g, "");
-
-    const res = await axiosInstance.post("/api/admin/blog", {
+    const res = await axiosInstance.put(`/api/admin/updateBlog/${blogId}`, {
       title,
       content,
       coverImage: imageUrl,
@@ -156,32 +144,41 @@ const [keywords, setKeywords] = useState<string[]>([]);
     });
 
     if (res.data.success) {
-      alert("Submitted");
-      // router.push("/admin/blogs");
-      setContent("");
-      setSelectedCategories([]);
-      setTitle("");
-      setImagePreview(null);
-      setImageFile(null);
+      alert("Blog updated");
     } else {
-      alert("Failed to add blog");
+      alert("Failed to update blog");
     }
 
     setLoading(false);
   };
 
-  const getCategories = async () => {
-    const res = await axiosInstance.get("/api/categories");
-
-    setCategories(res.data.categories);
-  };
-
   useEffect(() => {
+    const getCategories = async () => {
+      const res = await axiosInstance.get("/api/categories");
+      setCategories(res.data.categories);
+    };
+
+    const fetchBlog = async () => {
+      const res = await axiosInstance.get(`/api/blogs/${blogId}`);
+      if (res.data.success) {
+        const blog: Blog = res.data.blog;
+        setTitle(blog.title);
+        setContent(blog.content);
+        setSelectedCategories(blog.categories.map((cat) => cat));
+        setImagePreview(blog.coverImage);
+        setKeywords(blog.keywords);
+      } else {
+        alert("Blog not found");
+        router.push("/admin/blogs");
+      }
+    };
+
     getCategories();
-  }, []);
+    fetchBlog();
+  }, [blogId, router]);
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-2xl font-semibold mb-4">Add New Blog</h1>
+      <h1 className="text-2xl font-semibold mb-4">Update Blog</h1>
 
       <input
         type="text"
@@ -197,8 +194,9 @@ const [keywords, setKeywords] = useState<string[]>([]);
           return (
             <label
               key={cat.name}
-              className={`flex items-center gap-3 border-2 rounded-lg px-4 py-3 cursor-pointer transition h-10
-              ${isSelected ? "border-blue-500 bg-blue-50" : "border-gray-300"}`}
+              className={`flex items-center gap-3 border-2 rounded-lg px-4 py-3 cursor-pointer transition h-10 ${
+                isSelected ? "border-blue-500 bg-blue-50" : "border-gray-300"
+              }`}
             >
               <input
                 type="checkbox"
@@ -213,13 +211,11 @@ const [keywords, setKeywords] = useState<string[]>([]);
           );
         })}
       </div>
-
       <KeywordInput
         keywords={keywords}
         setKeywords={setKeywords}
         className="mb-4"
       />
-
       <div
         {...getRootProps()}
         className="border-dashed border-2 border-gray-400 rounded p-4 text-center cursor-pointer mb-4"
@@ -245,11 +241,11 @@ const [keywords, setKeywords] = useState<string[]>([]);
       />
 
       <button
-        onClick={handleSubmit}
+        onClick={handleUpdate}
         disabled={loading}
         className="bg-blue-600 text-white px-4 py-2 rounded mt-6 hover:bg-blue-700"
       >
-        {loading ? "Submitting..." : "Publish Blog"}
+        {loading ? "Updating..." : "Update Blog"}
       </button>
     </div>
   );
