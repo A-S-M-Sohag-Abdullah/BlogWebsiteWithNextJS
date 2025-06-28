@@ -1,4 +1,4 @@
-import BlogCommentBox from "@/components/BlogCommentBox";
+import BlogCommentBox from "@/components/SmallForms/BlogCommentBox";
 import {  roboto } from "@/components/googleFonts/fontsProvider";
 import { Blog } from "@/types";
 import axios from "axios";

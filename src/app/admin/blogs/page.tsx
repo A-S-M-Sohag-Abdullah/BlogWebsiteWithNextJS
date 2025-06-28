@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/lib/axiosInstance";
 import { Blog } from "@/types";
-import SearchInput from "@/components/SearchInput";
+import SearchInput from "@/components/SmallForms/SearchInput";
 
 export default function AdminBlogListPage() {
   const [blogs, setBlogs] = useState<Blog[]>([]);

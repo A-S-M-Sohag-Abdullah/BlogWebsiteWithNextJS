@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { michroma } from "../googleFonts/fontsProvider";
 import NavSearchBar from "./NavSearchBar";
 
@@ -27,7 +28,7 @@ const Header = () => (
       </nav>
     </div>
 
-    <button className="px-5 py-3 w-40 bg-white text-yellow-400 text-sm border border-black">Subscribe</button>
+    <Link href={'/subscribe'} className="px-5 py-3 w-40 bg-white text-yellow-400 text-sm border border-black text-center">Subscribe</Link>
   </header>
 );
 
