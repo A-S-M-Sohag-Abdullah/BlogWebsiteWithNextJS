@@ -30,8 +30,9 @@ export default async function BlogPostPage({
 
   const relatedBlogsMap = new Map<string, Blog>();
 
+
   allResults.forEach(({ blogs }) => {
-    blogs.forEach((b: Blog) => {
+    blogs?.forEach((b: Blog) => {
       if (b._id !== blogId && !relatedBlogsMap.has(b._id)) {
         relatedBlogsMap.set(b._id, b); // Avoid duplicates
       }
