@@ -58,7 +58,7 @@ async function SideBySIdeCategorySection({ category }: { category: string }) {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">{category}</h2>
         <Link
-          href="#"
+          href={`/${category}`}
           className="text-sm font-medium text-gray-600 hover:underline"
         >
           View All →
@@ -77,11 +77,13 @@ async function SideBySIdeCategorySection({ category }: { category: string }) {
               // override height via style since Next Image sets height automatically
             />
 
-            {blog.categories.map((category, index) => (
-              <p key={index} className="text-sm text-gray-500">
-                {category}
-              </p>
-            ))}
+            <div className="flex space-x-2 flex-wrap">
+              {blog.categories.map((category, index) => (
+                <p key={index} className="text-sm text-gray-500">
+                  {category}
+                </p>
+              ))}
+            </div>
             <h3 className="text-lg font-semibold">{blog.title}</h3>
             <p className="text-sm text-gray-600">{blog.excerpt}</p>
           </Link>
@@ -98,11 +100,13 @@ async function SideBySIdeCategorySection({ category }: { category: string }) {
                 className="w-full h-48 object-cover rounded-md mb-2"
                 // override height via style since Next Image sets height automatically
               />
-              {blog.categories.map((category, index) => (
-                <p key={index} className="text-sm text-gray-500">
-                  {category}
-                </p>
-              ))}
+             <div className="flex space-x-2 flex-wrap">
+               {blog.categories.map((category, index) => (
+                 <p key={index} className="text-sm text-gray-500">
+                   {category}
+                 </p>
+               ))}
+             </div>
               <h4 className="text-md font-medium">{blog.title}</h4>
             </Link>
           ))}

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import NewsletterForm from "../SmallForms/NewsLetter";
 
 const Footer = () => (
@@ -11,10 +12,10 @@ const Footer = () => (
         <h3 className="font-semibold text-lg mb-2">Company</h3>
         <ul className="space-y-1 text-gray-600 text-xs">
           <li>
-            <a href="#">About Us</a>
+            <Link href="/about">About Us</Link>
           </li>
           <li>
-            <a href="#">Team</a>
+            <Link href="/contact">Contact</Link>
           </li>
         </ul>
       </div>
@@ -33,10 +34,10 @@ const Footer = () => (
         <h3 className="font-semibold text-lg mb-2">Follow Us</h3>
         <ul className="space-y-1 text-gray-600 text-xs">
           <li>
-            <a href="#">Facebook</a>
+            <Link href="#">Facebook</Link>
           </li>
           <li>
-            <a href="#">Instagram</a>
+            <Link href="#">Instagram</Link>
           </li>
         </ul>
       </div>

@@ -69,14 +69,16 @@ async function HomeCategoryBlogSection({ category }: { category: string }) {
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-4">
-                  {item.categories.map((category, index) => (
-                    <h5
-                      key={index}
-                      className="text-xs bg-gray-600 rounded text-white py-1 px-4 w-fit mb-1"
-                    >
-                      {category}
-                    </h5>
-                  ))}
+                  <div className="flex space-x-2 flex-wrap">
+                    {item.categories.map((category, index) => (
+                      <h5
+                        key={index}
+                        className="text-xs bg-gray-600 rounded text-white py-1 px-4 w-fit mb-1"
+                      >
+                        {category}
+                      </h5>
+                    ))}
+                  </div>
                   <h3 className="text-lg font-semibold">{item.title}</h3>
                 </div>
               </Link>

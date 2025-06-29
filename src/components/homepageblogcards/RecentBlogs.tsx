@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { montserrat } from "../googleFonts/fontsProvider";
 import axios from "axios";
 
@@ -52,23 +53,26 @@ export default async function RecentBlogs() {
       {recentBlogs.map((item) => (
         <div key={item._id} className="col-span-1 flex space-y-3">
           <div className="p-3">
-            {item.categories.map((category, index) => (
-              <h5
-                key={index}
-                className="text-xs bg-gray-600 rounded text-white py-1 px-4 w-fit mb-1"
-              >
-                {category}
-              </h5>
-            ))}
+            <div className="flex space-x-2 flex-wrap">
+              {item.categories.map((category, index) => (
+                <h5
+                  key={index}
+                  className="text-xs bg-gray-600 rounded text-white py-1 px-4 w-fit mb-1"
+                >
+                  {category}
+                </h5>
+              ))}
+            </div>
 
-            <h2
+            <Link
+              href={`/blog/${item._id}`}
               className={
                 "text-sm text-justify font-bold mb-2  leading-5 " +
                 montserrat.className
               }
             >
               {item.title}
-            </h2>
+            </Link>
           </div>
         </div>
       ))}

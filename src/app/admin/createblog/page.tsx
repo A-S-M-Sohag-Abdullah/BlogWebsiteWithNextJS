@@ -17,7 +17,7 @@ export default function AddBlogPage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
-const [keywords, setKeywords] = useState<string[]>([]);
+  const [keywords, setKeywords] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   //other states
@@ -202,9 +202,10 @@ const [keywords, setKeywords] = useState<string[]>([]);
             >
               <input
                 type="checkbox"
-                checked={isSelected}
+                checked={cat.name === "all" ? true : isSelected}
                 onChange={() => toggleCategory(cat.name)}
                 className="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-0"
+                disabled={cat.name === "all"}
               />
               <span className="text-base font-medium text-gray-800">
                 {cat.name}

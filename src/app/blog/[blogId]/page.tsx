@@ -64,7 +64,7 @@ export default async function BlogPostPage({
           {blog.categories.map((cat, idx) => (
             <span key={idx}>
               <Link
-                href={`/category/${cat.toLowerCase()}`}
+                href={`/${cat}`}
                 className="text-orange-600 hover:underline"
               >
                 {cat}

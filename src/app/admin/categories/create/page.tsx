@@ -9,15 +9,22 @@ export default function CreateCategoryPage() {
   const [message, setMessage] = useState("");
 
   const handleSubmit = async () => {
-    if (!name.trim()) {
+    const trimmedName = name.trim();
+
+    if (!trimmedName) {
       alert("Category name is required");
+      return;
+    }
+
+    if (trimmedName.includes("&")) {
+      alert("Category name cannot contain '&'");
       return;
     }
 
     try {
       setLoading(true);
       const res = await axios.post("/api/admin/category", {
-        name: name.trim(),
+        name: trimmedName,
       });
 
       if (res.data.success) {

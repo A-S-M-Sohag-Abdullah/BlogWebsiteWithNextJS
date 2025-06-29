@@ -9,11 +9,24 @@ function BlogCommentBox({ blogId }: { blogId: string }) {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await fetch(`/api/blogs/${blogId}/comment`, {
+    const res = await fetch(`/api/blogs/${blogId}/comment`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, message }),
     });
+
+    if (res.ok) {
+      // Clear form (optional)
+      setName("");
+      setEmail("");
+      setMessage("");
+
+      // Reload the page to show the new comment
+      window.location.reload();
+    } else {
+      const data = await res.json();
+      alert(data.error || "Failed to post comment");
+    }
   };
   return (
     <section className="max-w-4xl mx-auto mt-12 bg-white p-6 md:p-10 rounded-md">

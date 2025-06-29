@@ -7,6 +7,7 @@ import HomeCategoryBlogSection from "@/components/homepageblogcards/HomeCategory
 import HalfWidhtCategoryBlogSection from "@/components/homepageblogcards/HalfWidhtCategoryBlogSection";
 /* import Link from "next/link"; */
 import SideBySIdeCategorySection from "@/components/homepageblogcards/SideBySIdeCategorySection";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -73,7 +74,15 @@ export default function Home() {
         <RecentBlogs />
       </Suspense>
 
-      <h2 className="text-2xl font-bold mb-4">Stock Market News</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-bold">Entertainment</h2>
+        <Link
+          href={`/Entertainment`}
+          className="text-sm font-medium text-gray-600 hover:underline"
+        >
+          View All →
+        </Link>
+      </div>
       <Suspense
         fallback={
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
@@ -94,7 +103,15 @@ export default function Home() {
         <HomeCategoryBlogSection category="Entertainment" />
       </Suspense>
 
-      <h2 className="text-2xl font-bold mb-4">Latest Technology</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-bold">Technology</h2>
+        <Link
+          href={`/Technology`}
+          className="text-sm font-medium text-gray-600 hover:underline"
+        >
+          View All →
+        </Link>
+      </div>
       <Suspense
         fallback={
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
@@ -112,10 +129,18 @@ export default function Home() {
           </div>
         }
       >
-        <HalfWidhtCategoryBlogSection category="Automobile" />
+        <HalfWidhtCategoryBlogSection category="Technology" />
       </Suspense>
 
-      <h2 className="text-2xl font-bold mb-4">Politics</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-bold">Politics</h2>
+        <Link
+          href={`/Politics`}
+          className="text-sm font-medium text-gray-600 hover:underline"
+        >
+          View All →
+        </Link>
+      </div>
       <Suspense
         fallback={
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
@@ -136,7 +161,15 @@ export default function Home() {
         <HomeCategoryBlogSection category="Business" />
       </Suspense>
 
-      <h2 className="text-2xl font-bold mb-4">Health</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-bold">Health</h2>
+        <Link
+          href={`/Health`}
+          className="text-sm font-medium text-gray-600 hover:underline"
+        >
+          View All →
+        </Link>
+      </div>
       <Suspense
         fallback={
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
@@ -157,7 +190,15 @@ export default function Home() {
         <HomeCategoryBlogSection category="Career" />
       </Suspense>
 
-      <h2 className="text-2xl font-bold mb-4">Automobile</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-bold">Automobile</h2>
+        <Link
+          href={`/Automobile`}
+          className="text-sm font-medium text-gray-600 hover:underline"
+        >
+          View All →
+        </Link>
+      </div>
       <Suspense
         fallback={
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">

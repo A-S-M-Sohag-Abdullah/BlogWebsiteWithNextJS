@@ -6,38 +6,39 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
   try {
     await connectDB();
-
     const { searchParams } = new URL(req.url);
 
     const categoryName = searchParams.get("name");
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
 
-    if (!categoryName) {
-      return NextResponse.json(
-        { success: false, message: "Category name is required" },
-        { status: 400 }
-      );
-    }
-
-    // ✅ Find category by name
-    const category = await Category.findOne({ name: categoryName });
-    
-    if (!category) {
-      return NextResponse.json(
-        { success: false, message: "Category not found" },
-        { status: 404 }
-      );
-    }
-
     const skip = (page - 1) * limit;
 
-    const blogs = await Blog.find({ categories: category.name })
+    let query = {};
+    let total = 0;
+
+    // If category is provided and not "all"
+    if (categoryName && categoryName.toLowerCase() !== "all") {
+      const category = await Category.findOne({ name: categoryName });
+
+      if (!category) {
+        console.log("Category not found:", categoryName);
+        return NextResponse.json(
+          { success: false, message: "Category not found" },
+          { status: 404 }
+        );
+      }
+
+      query = { categories: category.name };
+    }
+
+    const blogs = await Blog.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .populate("categories");
-    const total = await Blog.countDocuments({ categories: category._id });
+
+    total = await Blog.countDocuments(query);
 
     return NextResponse.json({
       success: true,
