@@ -23,11 +23,11 @@ export async function generateMetadata({
 
   return {
     title: blog.title,
-    description: blog.metaDescription,
+    description: blog.metaDescription.slice(0, 350),
     keywords: blog.keywords,
     openGraph: {
       title: blog.title,
-      description: blog.metaDescription,
+      description: blog.metaDescription.slice(0, 350),
       images: [blog.coverImage],
     },
   };
